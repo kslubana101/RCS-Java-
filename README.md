@@ -66,5 +66,85 @@ public class Parcel {
         return cost;
     }
 }
+```
+### StandardParcel.java
+```java
+
+/**
+ * Subclass for standard deliveries with size-based surcharges.
+ */
+public class StandardParcel extends Parcel {
+    private String sizeTier;
+
+    public StandardParcel(double weight, double distance, boolean insured, String sizeTier) {
+        super(weight, distance, insured);
+
+        if (!sizeTier.equals("S") && !sizeTier.equals("M") && !sizeTier.equals("L")) {
+            throw new IllegalArgumentException("Invalid size tier");
+        }
+
+        this.sizeTier = sizeTier;
+    }
+
+    @Override
+    public double shippingCost() {
+        double cost = super.shippingCost();
+        switch (sizeTier) {
+            case "S": cost += 0.75; break;
+            case "M": cost += 1.25; break;
+            case "L": cost += 1.75; break;
+        }
+        return cost;
+    }
+}
+```
+### ExpressParcel.java
+```java
+
+/**
+ * Subclass for express deliveries with same-day options.
+ */
+public class ExpressParcel extends Parcel {
+    private boolean sameDay;
+
+    public ExpressParcel(double weight, double distance, boolean insured, boolean sameDay) {
+        super(weight, distance, insured);
+        this.sameDay = sameDay;
+    }
+
+    @Override
+    public double shippingCost() {
+        double cost = super.shippingCost() + 5.00; // Express premium
+        if (sameDay) {
+            cost += 10.00; // Same-day surcharge
+        }
+        return cost;
+    }
+}
+```
+### InternationalParcel.java
+```java
+/**
+ * Subclass for international deliveries including customs fees.
+ */
+public class InternationalParcel extends Parcel {
+    private double customsFee;
+
+    public InternationalParcel(double weight, double distance, boolean insured, double customsFee) {
+        super(weight, distance, insured);
+        if (customsFee < 0) {
+            throw new IllegalArgumentException("Customs fee cannot be negative");
+        }
+        this.customsFee = customsFee;
+    }
+
+    @Override
+    public double shippingCost() {
+        double cost = super.shippingCost() * 1.20; // 20% international fee
+        return cost + customsFee;
+    }
+}
+```
+
 
 
